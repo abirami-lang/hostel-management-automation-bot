@@ -110,3 +110,8 @@ The original report contains an email credential in its code appendix. Do not co
 - Adithi Shree V
 
 Panimalar Engineering College, Department of Computer Science and Engineering.
+## 🎥 Project Demo
+
+The demo video shows the working flow of the Hostel Management Automation Bot, including complaint submission, ticket generation, and automated processing.
+
+[▶️ Watch the Demo](./DEMO.mp4)
