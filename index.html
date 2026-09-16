@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Complaint System</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4c669f, #192f6a);
+        }
+        .container {
+            width: min(430px, 92%);
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.2);
+        }
+        h1 { margin-top: 0; text-align: center; }
+        input, textarea, select, button {
+            width: 100%;
+            margin: 8px 0;
+            padding: 11px;
+            border-radius: 7px;
+            border: 1px solid #ccc;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        button {
+            border: 0;
+            background: #3b5998;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #response { margin-top: 16px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Hostel Complaint Form</h1>
+
+    <form id="complaintForm">
+        <input id="name" placeholder="Name" required>
+        <input id="email" type="email" placeholder="Your Email" required>
+        <input id="room" placeholder="Room / Block" required>
+
+        <select id="issue" required>
+            <option value="">Select Issue</option>
+            <option value="Water">Water</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Cleaning">Cleaning</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Food Quality">Food Quality</option>
+            <option value="Security">Security</option>
+            <option value="IT">IT</option>
+        </select>
+
+        <textarea id="complaint" placeholder="Enter complaint" required></textarea>
+        <button type="submit">Submit Complaint</button>
+    </form>
+
+    <div id="response"></div>
+</div>
+
+<script>
+document.getElementById("complaintForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const data = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        room: document.getElementById("room").value.trim(),
+        issue: document.getElementById("issue").value,
+        complaint: document.getElementById("complaint").value.trim()
+    };
+
+    const responseBox = document.getElementById("response");
+    responseBox.textContent = "Submitting...";
+
+    try {
+        const response = await fetch("/submit", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            responseBox.textContent = result.message || "Submission failed.";
+            return;
+        }
+
+        responseBox.innerHTML = `
+            <b>${result.message}</b><br>
+            Ticket ID: <b>${result.ticket_id}</b><br>
+            Name: ${result.name}<br>
+            Room: ${result.room}<br>
+            Issue: ${result.issue}<br>
+            Priority: ${result.priority}<br>
+            Status: ${result.status}
+        `;
+
+        event.target.reset();
+    } catch (error) {
+        responseBox.textContent = "Something went wrong!";
+    }
+});
+</script>
+</body>
+</html>
